@@ -1,0 +1,11 @@
+FROM python:latest
+
+WORKDIR /app
+
+# Install FastAPI and Uvicorn
+RUN pip install fastapi uvicorn
+
+# Copy the scripts folder (the API code will run from here)
+COPY ./scripts /app
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
