@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  jenkins:
+    build: .
+    container_name: jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - ./jenkins_data:/var/jenkins_home
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+    networks:
+      - jenkins-net
+
+  vault:
+    image: hashicorp/vault:latest
+    container_name: vault
+    ports:
+      - "8200:8200"
+    volumes:
+      - ./vault_data:/vault/file
+    environment:
+      - VAULT_DEV_ROOT_TOKEN_ID=root
+      - VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200
+    command: server -dev
+    networks:
+      - jenkins-net
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    ports:
+      - "9001:9000"
+    volumes:
+      - portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - jenkins-net
+
+volumes:
+  portainer_data:
+
+networks:
+  jenkins-net:
+    driver: bridge

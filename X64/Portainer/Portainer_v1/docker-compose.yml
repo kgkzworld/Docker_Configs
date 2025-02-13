@@ -1,0 +1,42 @@
+#.DESCRIPTION
+#	This is a docker-compose file for Portainer.
+#	- Portainer is a lightweight management UI which allows you to easily manage
+#   your Docker host or Swarm cluster.
+#
+#.NOTES
+#	[Original Author]
+#		o Michael Arroyo
+#	[Original Build Version]
+#		o 1.0.1.20250210 e.g [XX = Major (.) XX = Minor (.) XX = Patch (.) XXXX = Build Date (YYYYMMDD)]
+#	[Latest Author]
+#		o Michael Arroyo
+#	[Latest Build Version]
+#		o 1.0.1.20250210 e.g [XX = Major (.) XX = Minor (.) XX = Patch (.) XXXX = Build Date (YYYYMMDD)]
+#	[Comments]
+#		o
+#	[Forked Project]
+#		o
+#
+#.DEPENDENCIES
+#	o
+#
+#.BUILD NOTES
+#	o 1.0.1.20250210
+#		[Michael Arroyo] Initial Post
+#
+version: '3.8'
+
+services:
+  portainerV1:
+    image: portainer/portainer-ce:latest
+    container_name: portainerV1
+    command: -H unix:///var/run/docker.sock
+    ports:
+      - "9001:9000"   # Host port 9001 mapped to container's port 9000 to avoid conflict with Cribl
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    restart: always
+
+volumes:
+  portainer_data:

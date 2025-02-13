@@ -1,0 +1,29 @@
+# https://github.com/dockur/macos
+#
+# Value	Version		Name
+# 15	macOS 15	Sequoia
+# 14	macOS 14	Sonoma
+# 13	macOS 13	Ventura
+# 12	macOS 12	Monterey
+# 11	macOS 11	Big Sur
+#
+services:
+  osx:
+    image: dockurr/macos
+    container_name: macos
+    environment:
+      VERSION: "15"
+      DISK_SIZE: "128G"
+      RAM_SIZE: "8G"
+      CPU_CORES: "4"
+    devices:
+      - /dev/kvm
+      - /dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8010:8006
+      - 5900:5900/tcp
+      - 5900:5900/udp
+    restart: unless-stopped
+    stop_grace_period: 2m

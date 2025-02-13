@@ -1,0 +1,82 @@
+#.DESCRIPTION
+#    This is a docker-compose file for Cribl and Portainer.
+#    - Cribl is a data pipeline tool that helps route, shape, and enrich data.
+#    - Portainer is a lightweight management UI which allows you to easily manage your Docker host or Swarm cluster.
+#
+#.NOTES
+#    [Original Author]
+#        o Michael Arroyo
+#    [Original Build Version]
+#        o 1.0.1.20050210 e.g [XX = Major (.) XX = Minor (.) XX = Patch (.) XXXX = Build Date (YYYYMMDD)]
+#    [Latest Author]
+#        o Michael Arroyo
+#    [Latest Build Version]
+#        o 1.0.1.20050210 e.g [XX = Major (.) XX = Minor (.) XX = Patch (.) XXXX = Build Date (YYYYMMDD)]
+#    [Comments]
+#        o
+#    [Forked Project]
+#        o
+#
+#.DEPENDENCIES
+#    o Docker
+#    o Docker Compose
+#
+#.BUILD NOTES
+#    o 1.0.1.20050210
+#        [Michael Arroyo] Initial Post
+#
+#.EXAMPLES
+#    Command: docker-compose up -d
+#    Description: Starts the Cribl and Portainer containers in detached mode.
+#    Notes: Ensure Docker and Docker Compose are installed and running on your system.
+#
+#    Command: docker-compose down
+#    Description: Stops and removes the Cribl and Portainer containers.
+#    Notes: Ensure Docker and Docker Compose are installed and running on your system.
+
+version: '3.8'
+
+services:
+  cribl:
+    image: cribl/cribl:latest
+    container_name: cribl
+    ports:
+      - "9000:9000"   # Cribl UI
+      - "9003:9003"   # Additional port; adjust as needed based on your Cribl configuration
+    environment:
+      # Replace with your actual Cribl license key if required.
+      - CRIBL_LICENSE_KEY=CriblFree
+    volumes:
+      - cribl_data:/opt/cribl/data
+    restart: always
+
+  splunk:
+    image: splunk/splunk:latest
+    container_name: splunk
+    ports:
+      - "8000:8000"   # Splunk web interface
+      - "8088:8088"   # HTTP Event Collector (HEC)
+    environment:
+      # Accept the Splunk license and set the admin password.
+      - SPLUNK_START_ARGS=--accept-license
+      #- SPLUNK_PASSWORD=YourSplunkPassword
+      - SPLUNK_PASSWORD=Password123!
+    volumes:
+      - splunk_data:/opt/splunk/etc
+    restart: always
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    command: -H unix:///var/run/docker.sock
+    ports:
+      - "9001:9000"   # Host port 9001 mapped to container's port 9000 to avoid conflict with Cribl
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    restart: always
+
+volumes:
+  cribl_data:
+  splunk_data:
+  portainer_data:

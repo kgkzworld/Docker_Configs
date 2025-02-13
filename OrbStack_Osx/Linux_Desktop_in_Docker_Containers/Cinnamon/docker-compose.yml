@@ -1,0 +1,16 @@
+services:
+  ubuntu-vnc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3390:3389"
+      - "5902:5902"
+    environment:
+      - USER=labadmin
+      - PASS=Password!
+    volumes:
+      - ./home:/home
+    stdin_open: true
+    tty: true
+    command: service dbus start; /usr/lib/systemd/systemd-logind & service xrdp start; /startvnc; tail -f /dev/null

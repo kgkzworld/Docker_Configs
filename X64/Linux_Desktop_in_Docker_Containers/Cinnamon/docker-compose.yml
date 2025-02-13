@@ -1,0 +1,50 @@
+#.DESCRIPTION
+#    This Docker Compose file is used to build and run the Ubuntu Cinnamon container
+#
+#.NOTES
+#    [Original Author]
+#        o Michael Arroyo
+#    [Original Build Version]
+#        o 1.0.1.20050210 e.g [XX = Major (.) XX = Minor (.) XX = Patch (.) XXXX = Build Date (YYYYMMDD)]
+#    [Latest Author]
+#        o Michael Arroyo
+#    [Latest Build Version]
+#        o 1.0.1.20050210 e.g [XX = Major (.) XX = Minor (.) XX = Patch (.) XXXX = Build Date (YYYYMMDD)]
+#    [Comments]
+#        o
+#    [Forked Project]
+#        o
+#
+#.DEPENDENCIES
+#    o Docker
+#    o Docker Compose
+#
+#.BUILD NOTES
+#    o 1.0.1.20050210
+#        [Michael Arroyo] Initial Post
+#
+#.EXAMPLES
+#    Command: docker-compose up -d
+#    Description: Starts the Ubuntu Cinnamon container in detached mode
+#    Notes: Ensure Docker and Docker Compose are installed and running on your system
+#
+#    Command: docker-compose down
+#    Description: Stops and removes the Ubuntu Cinnamon container
+#    Notes: Ensure Docker and Docker Compose are installed and running on your system
+
+services:
+  ubuntu-vnc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3390:3389"
+      - "5902:5902"
+    environment:
+      - USER=labadmin
+      - PASS=Password!
+    volumes:
+      - ./home:/home
+    stdin_open: true
+    tty: true
+    command: service dbus start; /usr/lib/systemd/systemd-logind & service xrdp start; /startvnc; tail -f /dev/null

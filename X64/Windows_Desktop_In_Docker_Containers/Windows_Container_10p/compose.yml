@@ -1,0 +1,66 @@
+#.DESCRIPTION
+#    This is a docker-compose file for running a Windows 10 Pro environment in a Docker container.
+#
+#.NOTES
+#    [Original Author]
+#        o Michael Arroyo
+#    [Original Build Version]
+#        o 1.0.1.20050210 e.g [XX = Major (.) XX = Minor (.) XX = Patch (.) XXXX = Build Date (YYYYMMDD)]
+#    [Latest Author]
+#        o Michael Arroyo
+#    [Latest Build Version]
+#        o 1.0.1.20050210 e.g [XX = Major (.) XX = Minor (.) XX = Patch (.) XXXX = Build Date (YYYYMMDD)]
+#    [Comments]
+#        o
+#    [Forked Project]
+#        o
+#
+#.DEPENDENCIES
+#    o Docker
+#    o Docker Compose
+#
+#.BUILD NOTES
+#    o 1.0.1.20050210
+#        [Michael Arroyo] Initial Post
+#
+#.EXAMPLES
+#    Command: docker-compose up -d
+#    Description: Starts the Windows 10 Pro container in detached mode.
+#    Notes: Ensure Docker and Docker Compose are installed and running on your system.
+#
+#    Command: docker-compose down
+#    Description: Stops and removes the Windows 10 Pro container.
+#    Notes: Ensure Docker and Docker Compose are installed and running on your system.
+
+services:
+  windows10p:
+    image: dockurr/windows
+    container_name: windows10p
+    environment:
+      VERSION: "10"
+      DISK_SIZE: "128G"
+      RAM_SIZE: "8G"
+      CPU_CORES: "4"
+      USERNAME: "LabAdmin"
+      PASSWORD: "Password!"
+      LANGUAGE: "English"
+      REGION: "en-US"
+      KEYBOARD: "en-US"
+    devices:
+      - /dev/kvm
+      - /dev/net/tun
+    volumes:
+      - ./isos/Windows_10.iso:/custom.iso
+      - ./oem:/oem
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8007:8006
+      - 3391:3389/tcp
+      - 3391:3389/udp
+
+    restart: unless-stopped
+    stop_grace_period: 2m
+
+volumes:
+  windows10p_data:
